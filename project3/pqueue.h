@@ -165,8 +165,15 @@ private:
     * Private function declarations go here! *
     ******************************************/
     void merge(Node& h1);
-    Node* merge(Node * h1, Node * h2);
+    Node* merge(Node* h1, Node* h2);
+    Node* mergeSkew(Node* h1, Node* h2);
+    Node* mergeLeftist(Node* h1, Node* h2);
     void swapChildren(Node * h1);
+    void  printPatientQueue(Node* pos) const;
+    bool checkNPL();
+    bool checkNPL(Node* pos);
+    bool checkRootNum();
+    bool checkRootNum(Node* pos, int num);
 };
 
 #endif

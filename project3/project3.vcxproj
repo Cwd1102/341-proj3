@@ -130,8 +130,11 @@
     <ClInclude Include="pqueue.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="driver.cpp" />
+    <ClCompile Include="mytest.cpp" />
     <ClCompile Include="pqueue.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
