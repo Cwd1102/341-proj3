@@ -151,6 +151,7 @@ public:
     // Set a new data structure (skew/leftist). Must rebuild the heap!!!
     void setStructure(STRUCTURE structure);
     void dump() const;  // For debugging purposes.
+    bool  checkNPL();
 
 private:
     Node* m_heap;          // Pointer to root of skew heap
@@ -164,16 +165,16 @@ private:
     /******************************************
     * Private function declarations go here! *
     ******************************************/
-    void merge(Node& h1);
+    void  merge(Node& h1);
     Node* merge(Node* h1, Node* h2);
     Node* mergeSkew(Node* h1, Node* h2);
     Node* mergeLeftist(Node* h1, Node* h2);
-    void swapChildren(Node * h1);
+    void  swapChildren(Node * h1);
     void  printPatientQueue(Node* pos) const;
-    bool checkNPL();
-    bool checkNPL(Node* pos);
-    bool checkRootNum();
-    bool checkRootNum(Node* pos, int num);
+    bool  checkNPL(Node* pos);
+    bool  checkRootNum();
+    bool  checkRootNum(Node* pos, int num);
+    void deepCopy(Node* dest, Node* src);
 };
 
 #endif

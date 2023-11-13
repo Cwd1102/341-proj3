@@ -35,14 +35,25 @@ PQueue::PQueue(const PQueue& rhs){
     m_structure = rhs.m_structure;
     m_size = rhs.m_size;
     m_heap = nullptr;
-    if(rhs.m_heap != nullptr){
+    if (rhs.m_heap != nullptr) {
         m_heap = new Node(*rhs.m_heap);
+        deepCopy(m_heap, rhs.m_heap);
     }
 }
 
 PQueue& PQueue::operator=(const PQueue& rhs) {
+    m_priorFunc = rhs.m_priorFunc;
+    m_heapType = rhs.m_heapType;
+    m_structure = rhs.m_structure;
+    m_size = rhs.m_size;
+    m_heap = nullptr;
+    if (rhs.m_heap != nullptr) {
+        m_heap = new Node(*rhs.m_heap);
+        deepCopy(m_heap, rhs.m_heap);
+    }
     return *this;
 }
+
 void PQueue::mergeWithQueue(PQueue& rhs) {
     if (this == &rhs) {
         throw domain_error("Cannot merge a heap with itself.");
@@ -92,10 +103,16 @@ void PQueue::setPriorityFn(prifn_t priFn, HEAPTYPE heapType) {
     m_priorFunc = priFn;
     m_heapType = heapType;
     if (m_size > 1) {
-        Node* temp = m_heap;
-        m_heap = nullptr;
-        m_heap = merge(temp->m_left, temp->m_right);
-        delete temp;
+        PQueue newQueue(m_priorFunc, m_heapType, m_structure);
+        while (m_heap != nullptr) {
+            Patient patient = getNextPatient();
+            newQueue.insertPatient(patient);
+        }
+        m_heap = newQueue.m_heap;
+        m_size = newQueue.m_size;
+        newQueue.m_heap = nullptr;
+        newQueue.m_size = 0;
+
     }
 }
 
@@ -104,9 +121,9 @@ void PQueue::setStructure(STRUCTURE structure) {
     m_structure = structure;
     if (m_size > 1) {
 		Node* temp = m_heap;
-		m_heap = nullptr;
-		m_heap = merge(temp->m_left, temp->m_right);
-		delete temp;
+        Node* temp1 = m_heap->m_right;
+        temp->m_right = nullptr;
+        m_heap = merge(temp, temp1);
 	}
 }
 
@@ -286,6 +303,7 @@ bool PQueue::checkNPL() {
 	return checkNPL(m_heap);
 }
 
+//check if the null path length of the left child is less than or equal to the right child
 bool PQueue::checkNPL(Node* pos){
     int leftNPL = 0;
     int rightNPL = 0;
@@ -328,5 +346,20 @@ bool PQueue::checkRootNum(Node* pos, int num) {
 	}
  
     return checkRootNum(pos->m_left, num) && checkRootNum(pos->m_right, num);
+}
 
+void PQueue::deepCopy(Node* dest, Node* src) {
+    if (src == nullptr) {
+        dest = nullptr;
+        return;
+    }
+    dest->m_patient = src->m_patient;
+    if (src->m_left != nullptr) {
+        dest->m_left = new Node(*src->m_left);
+        deepCopy(dest->m_left, src->m_left);
+    }
+    if (src->m_right != nullptr) {
+        dest->m_right = new Node(*src->m_right);
+        deepCopy(dest->m_right, src->m_right);
+    }
 }

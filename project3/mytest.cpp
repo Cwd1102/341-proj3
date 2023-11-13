@@ -1,5 +1,4 @@
 // CMSC 341 - Fall 2023 - Project 3
-
 #include "pqueue.h"
 #include <math.h>
 #include <algorithm>
@@ -159,7 +158,16 @@ public:
     bool testInsertMaxNormal();
     bool testMinRemove();
     bool testMaxRemove();
-
+    bool testLeftistHeap();
+    bool testStructChange();
+    bool testPriorityChange();
+    bool testMerge();
+    bool testCopyNormal();
+    bool testCopyEdge();
+    bool testAssignmentNormal();
+    bool testAssignmentEdge();
+    bool testDequeue();
+    bool testMergeError();
 
 };
 
@@ -191,7 +199,75 @@ int main() {
 		cout << "testMaxRemove " << M_FAIL << endl;
 	}
 
+    if (test.testLeftistHeap()) {
+		cout << "testLeftistHeap " << M_PASS << endl;
+	}
+    else {
+		cout << "testLeftistHeap " << M_FAIL << endl;
+	}
 
+    if (test.testStructChange()) {
+		cout << "testStructChange " << M_PASS << endl;
+	}
+    else {
+		cout << "testStructChange " << M_FAIL << endl;
+	}
+
+    if (test.testPriorityChange()) {
+		cout << "testPriorityChange " << M_PASS << endl;
+	}
+    else {
+		cout << "testPriorityChange " << M_FAIL << endl;
+	}
+
+    if (test.testMerge()) {
+        cout << "testMerge " << M_PASS << endl;
+    }
+    else {
+		cout << "testMerge " << M_FAIL << endl;
+	}
+
+    if (test.testCopyNormal()) {
+		cout << "testCopyNormal " << M_PASS << endl;
+	}
+    else {
+		cout << "testCopyNormal " << M_FAIL << endl;
+	}
+
+    if (test.testCopyEdge()) {
+		cout << "testCopyEdge " << M_PASS << endl;
+	}
+    else {
+		cout << "testCopyEdge " << M_FAIL << endl;
+	}
+
+    if (test.testAssignmentNormal()) {
+		cout << "testAssignmentNormal " << M_PASS << endl;
+	}
+    else {
+		cout << "testAssignmentNormal " << M_FAIL << endl;
+	}
+
+    if (test.testAssignmentEdge()) {
+		cout << "testAssignmentEdge " << M_PASS << endl;
+	}
+    else {
+		cout << "testAssignmentEdge " << M_FAIL << endl;
+	}
+
+    if (test.testDequeue()) {
+		cout << "testDequeue " << M_PASS << endl;
+	}
+    else {
+		cout << "testDequeue " << M_FAIL << endl;
+	}
+
+    if (test.testMergeError()) {
+		cout << "testMergeError " << M_PASS << endl;
+	}
+    else {
+		cout << "testMergeError " << M_FAIL << endl;
+	}
 
 	return 0;
 
@@ -404,3 +480,303 @@ bool Tester::testMaxRemove() {
     }
 
 }
+
+bool Tester::testLeftistHeap() {
+    Random nameGen(0, NUMNAMES - 1);
+    Random temperatureGen(MINTEMP, MAXTEMP);
+    Random oxygenGen(MINOX, MAXOX);
+    Random respiratoryGen(MINRR, MAXRR);
+    Random bloodPressureGen(MINBP, MAXBP);
+    Random nurseOpinionGen(MINOPINION, MAXOPINION);
+    PQueue test(priorityFn1, MAXHEAP, LEFTIST);
+
+    for (int i = 0; i < 15; i++) {
+        Patient temp(nameDB[nameGen.getRandNum()],
+            temperatureGen.getRandNum(),
+            oxygenGen.getRandNum(),
+            respiratoryGen.getRandNum(),
+            bloodPressureGen.getRandNum(),
+            nurseOpinionGen.getRandNum());
+        test.insertPatient(temp);
+    }
+
+    if (!test.checkNPL()) {
+		return false;
+	}
+
+    return true;
+
+}
+
+bool Tester::testStructChange() {
+    Random nameGen(0, NUMNAMES - 1);
+    Random temperatureGen(MINTEMP, MAXTEMP);
+    Random oxygenGen(MINOX, MAXOX);
+    Random respiratoryGen(MINRR, MAXRR);
+    Random bloodPressureGen(MINBP, MAXBP);
+    Random nurseOpinionGen(MINOPINION, MAXOPINION);
+    PQueue test(priorityFn1, MAXHEAP, LEFTIST);
+    int size = 0;
+    int root = 0;
+
+    for (int i = 0; i < 15; i++) {
+        Patient temp(nameDB[nameGen.getRandNum()],
+            temperatureGen.getRandNum(),
+            oxygenGen.getRandNum(),
+            respiratoryGen.getRandNum(),
+            bloodPressureGen.getRandNum(),
+            nurseOpinionGen.getRandNum());
+        test.insertPatient(temp);
+    }
+    
+    root = test.m_priorFunc(test.m_heap->getPatient());
+    size = test.m_size;
+    test.setStructure(SKEW);
+
+    if (test.m_size != size) {
+		return false;
+	}
+
+    if (!test.checkRootNum()) {
+        return false;
+    }
+
+    if (test.m_priorFunc(test.m_heap->getPatient()) != root) {
+        return false;
+    }
+
+    return true;
+}
+
+bool Tester::testPriorityChange() {
+    Random nameGen(0, NUMNAMES - 1);
+    Random temperatureGen(MINTEMP, MAXTEMP);
+    Random oxygenGen(MINOX, MAXOX);
+    Random respiratoryGen(MINRR, MAXRR);
+    Random bloodPressureGen(MINBP, MAXBP);
+    Random nurseOpinionGen(MINOPINION, MAXOPINION);
+    PQueue test(priorityFn1, MAXHEAP, LEFTIST);
+    int values[15]{ 0 };
+    int size = 0;
+    int root = 0;
+    int patientNum = 0;
+
+
+    for (int i = 0; i < 15; i++) {
+        Patient temp(nameDB[nameGen.getRandNum()],
+            temperatureGen.getRandNum(),
+            oxygenGen.getRandNum(),
+            respiratoryGen.getRandNum(),
+            bloodPressureGen.getRandNum(),
+            nurseOpinionGen.getRandNum());
+        test.insertPatient(temp);
+        values[i] = test.m_priorFunc(temp);
+    }
+
+    size = test.m_size;
+    test.setPriorityFn(priorityFn2, MINHEAP);
+    root = test.m_priorFunc(test.m_heap->getPatient());
+    size = test.m_size;
+
+    for (int i = 0; i < 15; i++) {
+        if (root > values[i])
+            return false;
+    }
+
+    return true;
+
+}
+
+bool Tester::testMerge() {
+    Random nameGen(0, NUMNAMES - 1);
+    Random temperatureGen(MINTEMP, MAXTEMP);
+    Random oxygenGen(MINOX, MAXOX);
+    Random respiratoryGen(MINRR, MAXRR);
+    Random bloodPressureGen(MINBP, MAXBP);
+    Random nurseOpinionGen(MINOPINION, MAXOPINION);
+    PQueue test(priorityFn1, MAXHEAP, LEFTIST);
+    PQueue test2(priorityFn1, MAXHEAP, LEFTIST);
+
+    for (int i = 0; i < 15; i++) {
+        Patient temp(nameDB[nameGen.getRandNum()],
+            temperatureGen.getRandNum(),
+            oxygenGen.getRandNum(),
+            respiratoryGen.getRandNum(),
+            bloodPressureGen.getRandNum(),
+            nurseOpinionGen.getRandNum());
+        test.insertPatient(temp);
+    }
+
+    for (int i = 0; i < 15; i++) {
+        Patient temp(nameDB[nameGen.getRandNum()],
+            temperatureGen.getRandNum(),
+            oxygenGen.getRandNum(),
+            respiratoryGen.getRandNum(),
+            bloodPressureGen.getRandNum(),
+            nurseOpinionGen.getRandNum());
+        test2.insertPatient(temp);
+    }
+
+    test.mergeWithQueue(test2);
+
+    if (test.m_size != 30) {
+		return false;
+	}
+}
+
+bool Tester::testCopyNormal() {
+	Random nameGen(0, NUMNAMES - 1);
+	Random temperatureGen(MINTEMP, MAXTEMP);
+	Random oxygenGen(MINOX, MAXOX);
+	Random respiratoryGen(MINRR, MAXRR);
+	Random bloodPressureGen(MINBP, MAXBP);
+	Random nurseOpinionGen(MINOPINION, MAXOPINION);
+	PQueue test(priorityFn1, MAXHEAP, LEFTIST);
+
+    for (int i = 0; i < 15; i++) {
+		Patient temp(nameDB[nameGen.getRandNum()],
+            			temperatureGen.getRandNum(),
+            			oxygenGen.getRandNum(),
+            			respiratoryGen.getRandNum(),
+            			bloodPressureGen.getRandNum(),
+            			nurseOpinionGen.getRandNum());
+		test.insertPatient(temp);
+	}
+
+    PQueue test2(test);
+
+    if (test2.m_priorFunc(test2.m_heap->getPatient()) != test.m_priorFunc(test.m_heap->getPatient())) {
+        return false;
+    }
+
+    return true;
+
+}
+
+bool Tester::testCopyEdge() {
+	Random nameGen(0, NUMNAMES - 1);
+	Random temperatureGen(MINTEMP, MAXTEMP);
+	Random oxygenGen(MINOX, MAXOX);
+	Random respiratoryGen(MINRR, MAXRR);
+	Random bloodPressureGen(MINBP, MAXBP);
+	Random nurseOpinionGen(MINOPINION, MAXOPINION);
+	PQueue test(priorityFn1, MAXHEAP, LEFTIST);
+
+    for (int i = 0; i < 15; i++) {
+		Patient temp(nameDB[nameGen.getRandNum()],
+            			temperatureGen.getRandNum(),
+            			oxygenGen.getRandNum(),
+            			respiratoryGen.getRandNum(),
+            			bloodPressureGen.getRandNum(),
+            			nurseOpinionGen.getRandNum());
+		test.insertPatient(temp);
+	}
+
+	PQueue test2(test);
+
+    if (test2.m_priorFunc(test2.m_heap->getPatient()) != test.m_priorFunc(test.m_heap->getPatient())) {
+		return false;
+	}
+
+	return true;
+}
+
+bool Tester::testAssignmentNormal() {
+    Random nameGen(0, NUMNAMES - 1);
+    Random temperatureGen(MINTEMP, MAXTEMP);
+    Random oxygenGen(MINOX, MAXOX);
+    Random respiratoryGen(MINRR, MAXRR);
+    Random bloodPressureGen(MINBP, MAXBP);
+    Random nurseOpinionGen(MINOPINION, MAXOPINION);
+    PQueue test(priorityFn1, MAXHEAP, LEFTIST);
+
+    for (int i = 0; i < 15; i++) {
+        Patient temp(nameDB[nameGen.getRandNum()],
+            temperatureGen.getRandNum(),
+            oxygenGen.getRandNum(),
+            respiratoryGen.getRandNum(),
+            bloodPressureGen.getRandNum(),
+            nurseOpinionGen.getRandNum());
+        test.insertPatient(temp);
+    }
+
+    PQueue test2 = test;
+
+    if (test2.m_priorFunc(test2.m_heap->getPatient()) != test.m_priorFunc(test.m_heap->getPatient())) {
+		return false;
+	}
+
+    return true;
+}
+
+bool Tester::testAssignmentEdge() {
+	Random nameGen(0, NUMNAMES - 1);
+	Random temperatureGen(MINTEMP, MAXTEMP);
+	Random oxygenGen(MINOX, MAXOX);
+	Random respiratoryGen(MINRR, MAXRR);
+	Random bloodPressureGen(MINBP, MAXBP);
+	Random nurseOpinionGen(MINOPINION, MAXOPINION);
+	PQueue test(priorityFn1, MAXHEAP, LEFTIST);
+
+    for (int i = 0; i < 15; i++) {
+		Patient temp(nameDB[nameGen.getRandNum()],
+            			temperatureGen.getRandNum(),
+            			oxygenGen.getRandNum(),
+            			respiratoryGen.getRandNum(),
+            			bloodPressureGen.getRandNum(),
+            			nurseOpinionGen.getRandNum());
+		test.insertPatient(temp);
+	}
+
+	PQueue test2 = test;
+
+    if (test2.m_priorFunc(test2.m_heap->getPatient()) != test.m_priorFunc(test.m_heap->getPatient())) {
+		return false;
+	}
+
+	return true;
+}
+
+bool Tester::testDequeue() {
+	Random nameGen(0, NUMNAMES - 1);
+	Random temperatureGen(MINTEMP, MAXTEMP);
+	Random oxygenGen(MINOX, MAXOX);
+	Random respiratoryGen(MINRR, MAXRR);
+	Random bloodPressureGen(MINBP, MAXBP);
+	Random nurseOpinionGen(MINOPINION, MAXOPINION);
+
+	PQueue test(priorityFn1, MAXHEAP, LEFTIST);
+
+    try {
+		test.getNextPatient();
+	}
+	catch (std::exception& e) {
+		return true;
+}
+	return false;
+}
+
+bool Tester::testMergeError() {
+    Random nameGen(0, NUMNAMES - 1);
+    Random temperatureGen(MINTEMP, MAXTEMP);
+    Random oxygenGen(MINOX, MAXOX);
+    Random respiratoryGen(MINRR, MAXRR);
+    Random bloodPressureGen(MINBP, MAXBP);
+    Random nurseOpinionGen(MINOPINION, MAXOPINION);
+
+    PQueue test(priorityFn1, MAXHEAP, LEFTIST);
+    PQueue test2(priorityFn2, MINHEAP, LEFTIST);
+
+    try {
+		test.mergeWithQueue(test2);
+	}
+    catch (std::exception& e) {
+		return true;
+	}
+
+    return false;
+
+}
+
+
+
